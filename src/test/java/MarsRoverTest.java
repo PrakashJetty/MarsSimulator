@@ -1,13 +1,43 @@
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
-
+/**
+ * Created by prakashjetty on 7/29/19.
+ */
 public class MarsRoverTest {
     public MarsRoverTest() {
 
     }
+
+    @Before
+    public void setup() {
+        MarsRover.getBlockSet().clear();
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(i, 6);
+        }).collect(Collectors.toSet()));
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(6, i);
+        }).collect(Collectors.toSet()));
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(i, -1);
+        }).collect(Collectors.toSet()));
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(-1, i);
+        }).collect(Collectors.toSet()));
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(-1, -i);
+        }).collect(Collectors.toSet()));
+        MarsRover.getBlockSet().addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+            return new MarsRover.Position(-i, -1);
+        }).collect(Collectors.toSet()));
+
+    }
+
 
     private boolean testPathEquality(Stack<MarsRover.Position> aresult, Stack<MarsRover.Position> eresult) {
         if (aresult.isEmpty() && eresult.isEmpty())
@@ -216,5 +246,64 @@ public class MarsRoverTest {
         eresult.add(new MarsRover.Position(0, 0));
 
         Assert.assertTrue(testPathEquality(aresult, eresult));
+    }
+
+    @Test
+    public void testExplorePath10() {
+        MarsRover.traverseCmd("PLACE", 0, 0);
+        MarsRover.traverseCmd("BLOCK", 4, 1);
+        MarsRover.traverseCmd("BLOCK", 2, 3);
+        Stack<MarsRover.Position> aresult = MarsRover.traverseCmd("EXPLORE", 5, 6);
+
+//        Stack<MarsRover.Position> eresult = new Stack<>();
+//        eresult.add(new MarsRover.Position(4, 3));
+//        eresult.add(new MarsRover.Position(3, 3));
+//        eresult.add(new MarsRover.Position(3, 2));
+//        eresult.add(new MarsRover.Position(3, 1));
+//        eresult.add(new MarsRover.Position(3, 0));
+//        eresult.add(new MarsRover.Position(2, 0));
+//        eresult.add(new MarsRover.Position(1, 0));
+//        eresult.add(new MarsRover.Position(0, 0));
+//
+//        Assert.assertTrue(testPathEquality(aresult, eresult));
+    }
+
+    @Test
+    public void testExplorePath11() {
+        MarsRover.traverseCmd("PLACE", 0, 0);
+        MarsRover.traverseCmd("BLOCK", 4, 1);
+        MarsRover.traverseCmd("BLOCK", 2, 3);
+        Stack<MarsRover.Position> aresult = MarsRover.traverseCmd("EXPLORE", 6, 6);
+
+//        Stack<MarsRover.Position> eresult = new Stack<>();
+//        eresult.add(new MarsRover.Position(4, 3));
+//        eresult.add(new MarsRover.Position(3, 3));
+//        eresult.add(new MarsRover.Position(3, 2));
+//        eresult.add(new MarsRover.Position(3, 1));
+//        eresult.add(new MarsRover.Position(3, 0));
+//        eresult.add(new MarsRover.Position(2, 0));
+//        eresult.add(new MarsRover.Position(1, 0));
+//        eresult.add(new MarsRover.Position(0, 0));
+//
+//        Assert.assertTrue(testPathEquality(aresult, eresult));
+    }
+
+    @Test
+    public void testExplorePath12() {
+        MarsRover.traverseCmd("PLACE", 0, 0);
+
+        Stack<MarsRover.Position> aresult = MarsRover.traverseCmd("EXPLORE", -1, -1);
+
+//        Stack<MarsRover.Position> eresult = new Stack<>();
+//        eresult.add(new MarsRover.Position(4, 3));
+//        eresult.add(new MarsRover.Position(3, 3));
+//        eresult.add(new MarsRover.Position(3, 2));
+//        eresult.add(new MarsRover.Position(3, 1));
+//        eresult.add(new MarsRover.Position(3, 0));
+//        eresult.add(new MarsRover.Position(2, 0));
+//        eresult.add(new MarsRover.Position(1, 0));
+//        eresult.add(new MarsRover.Position(0, 0));
+//
+//        Assert.assertTrue(testPathEquality(aresult, eresult));
     }
 }

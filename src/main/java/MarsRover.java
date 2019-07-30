@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+
+//
 public class MarsRover {
 
     private static final Scanner scanner = new Scanner(System.in);
@@ -65,20 +67,33 @@ public class MarsRover {
     private static Queue<Position> pathMap = new LinkedList<>();
     private static Set<Position> blockSet = new HashSet<>();
 
-    static {
-        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
-            return new Position(i, 6);
-        }).collect(Collectors.toSet()));
-        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
-            return new Position(6, i);
-        }).collect(Collectors.toSet()));
-    }
+//    static {
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(i, 6);
+//        }).collect(Collectors.toSet()));
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(6, i);
+//        }).collect(Collectors.toSet()));
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(i, -1);
+//        }).collect(Collectors.toSet()));
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(-1, i);
+//        }).collect(Collectors.toSet()));
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(-1, -i);
+//        }).collect(Collectors.toSet()));
+//        blockSet.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6).stream().map(i -> {
+//            return new Position(-i, -1);
+//        }).collect(Collectors.toSet()));
+//    }
 
 
     public MarsRover() {
     }
 
 
+    // gets next coordinate in normal movement
     private static int getNextTreadCoordinate(Position rposition, Position cposition, int coordinate, boolean prevBlocked) {
 
         if (rposition.getX() > cposition.getX() && rposition.getY() > cposition.getY()) {
@@ -103,20 +118,24 @@ public class MarsRover {
     }
 
 
+    // move unit distance
     private static void tread(Position currentPosition, int coordinate) {
         switch (Math.abs(coordinate)) {
             case 1:
-                if (currentPosition.getX() + coordinate <= 5)
-                    currentPosition.setX(currentPosition.getX() + coordinate);
+//                if (currentPosition.getX() + coordinate <= 5)
+                currentPosition.setX(currentPosition.getX() + coordinate);
                 break;
 
             case 2:
-                if (currentPosition.getY() + (coordinate / 2) <= 5)
-                    currentPosition.setY(currentPosition.getY() + (coordinate / 2));
+//                if (currentPosition.getY() + (coordinate / 2) <= 5)
+                currentPosition.setY(currentPosition.getY() + (coordinate / 2));
                 break;
         }
     }
 
+
+    // choses next optimum direction to tread based on previously visited coordinates
+    // this is used when we encounter blocks only
     private static int getNextDirectionToTreadBlockedState(Position rposition, Position cposition, Stack<Integer> coordinateStack) {
         int coordinate = coordinateStack.peek();
         if (coordinate == 1) {
@@ -389,30 +408,27 @@ public class MarsRover {
     }
 
 
+    // To Handle Move when we encounter blocks, we tread all posssible optimum unit path from current position
+
+
     private static Stack<Position> clearBlockNtreadToNextCorrectPosition(Position rposition,
                                                                          Stack<Position> currentResult,
                                                                          Set<Position> cblockedSet,
                                                                          int cordinate, Position currentPosition, boolean fromBlockState, Stack<Integer> coordinateStack, int blockStat) {
-        Position cPosition = currentResult.peek(); //popUntilOneLevelLess(currentResult, cordinate, currentPosition);
+        Position cPosition = currentResult.peek();
         currentPosition = new Position(cPosition.getX(), cPosition.getY());
         int ncoordinate = fromBlockState ? getNextDirectionToTreadBlockedState(rposition, currentPosition, coordinateStack) : getNextTreadCoordinate(rposition, currentPosition, cordinate, blockStat >= 1);// if previous was Y current should be X or -Y shoulbe be -X
         tread(currentPosition, ncoordinate);
-        if (currentPosition.equals(rposition)) {
-            currentResult.add(new Position(currentPosition.getX(), currentPosition.getY()));
-            print(currentResult);
-            System.out.println("==============");
-            return currentResult;
-        } else if (blockSet.contains(currentPosition) || cblockedSet.contains(currentPosition)) {
+        if (blockSet.contains(currentPosition) || cblockedSet.contains(currentPosition)) {
             ++blockStat;
             if (!fromBlockState) {
                 if (coordinateStack == null)
                     coordinateStack = new Stack<>();
-                coordinateStack.add(-cordinate);
-                coordinateStack.add(ncoordinate);
-            } else {
-                coordinateStack.add(-cordinate);
-                coordinateStack.add(ncoordinate);
+
             }
+            coordinateStack.add(-cordinate);
+            coordinateStack.add(ncoordinate);
+
 
             if (fromBlockState && currentResult.size() > 1 && coordinateStack.size() >= 2) {
                 if (coordinateStack.size() > 3) {
@@ -436,6 +452,11 @@ public class MarsRover {
             }
 
             return clearBlockNtreadToNextCorrectPosition(rposition, currentResult, cblockedSet, ncoordinate, currentPosition, true, coordinateStack, blockStat); // if previous was Y current should be +X
+        } else if (currentPosition.equals(rposition)) {
+            currentResult.add(new Position(currentPosition.getX(), currentPosition.getY()));
+            print(currentResult);
+            System.out.println("==============");
+            return currentResult;
         } else {
             coordinateStack.clear();
             --blockStat;
@@ -457,15 +478,15 @@ public class MarsRover {
         Position currentPosition = new Position(cposition.getX(), cposition.getY());
         cordinate = getNextTreadCoordinate(rposition, currentPosition, cordinate, false);
         tread(currentPosition, cordinate);
-        if (currentPosition.equals(rposition)) {
+        if (blockSet.contains(currentPosition) || cblockedSet.contains(currentPosition)) {
+            Stack<Integer> coordinateStack = new Stack<>();
+            coordinateStack.add(cordinate);
+            return clearBlockNtreadToNextCorrectPosition(rposition, currentResult, cblockedSet, cordinate, currentPosition, true, coordinateStack, 1);
+        } else if (currentPosition.equals(rposition)) {
             currentResult.add(new Position(currentPosition.getX(), currentPosition.getY()));
             print(currentResult);
             System.out.println("==============");
             return currentResult;
-        } else if (blockSet.contains(currentPosition) || cblockedSet.contains(currentPosition)) {
-            Stack<Integer> coordinateStack = new Stack<>();
-            coordinateStack.add(cordinate);
-            return clearBlockNtreadToNextCorrectPosition(rposition, currentResult, cblockedSet, cordinate, currentPosition, true, coordinateStack, 1);
         } else {
             currentResult.add(new Position(currentPosition.getX(), currentPosition.getY()));
             return explore(rposition, currentResult, cblockedSet, cordinate);
@@ -482,7 +503,7 @@ public class MarsRover {
                 blockSet.add(position);
                 break;
             case "PLACE":
-                blockSet.clear();
+                // blockSet.clear();
                 pathMap.clear();
                 pathMap.add(position);
                 break;
@@ -525,5 +546,14 @@ public class MarsRover {
             String[] cords = !cmdItems[0].equals("REPORT") ? cmdItems[1].split(",") : new String[]{"0", "0"};
             traverseCmd(cmdItems[0], Integer.parseInt(cords[0]), Integer.parseInt(cords[1]));
         } while (true);
+    }
+
+
+    public static Set<Position> getBlockSet() {
+        return blockSet;
+    }
+
+    public static void setBlockSet(Set<Position> blockSet) {
+        MarsRover.blockSet = blockSet;
     }
 }
