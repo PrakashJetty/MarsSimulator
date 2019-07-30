@@ -520,12 +520,20 @@ public class MarsRover {
                 cresult.add(cPosition);
                 Stack<Position> path2 = explore(new Position(x, y), cresult, new HashSet<>(), position.getY() > cPosition.getY() ? 2 : -2);
                 System.out.println("======= RESULT =======");
-                if (path2.size() > 0 && path1.size() > path2.size()) {
+                if (path1.size() == 0 && path2.size() > 0) {
                     print(path2);
                     return path2;
-                } else {
+                } else if (path2.size() == 0 && path1.size() > 0) {
                     print(path1);
                     return path1;
+                } else {
+                    if (path1.size() > path2.size()) {
+                        print(path2);
+                        return path2;
+                    } else {
+                        print(path1);
+                        return path1;
+                    }
                 }
 
         }

@@ -306,4 +306,47 @@ public class MarsRoverTest {
 //
 //        Assert.assertTrue(testPathEquality(aresult, eresult));
     }
+
+    @Test
+    public void testExplorePath13() {
+        MarsRover.traverseCmd("PLACE", 0, 0);
+        MarsRover.traverseCmd("BLOCK", 1, 5);
+        MarsRover.traverseCmd("BLOCK", 2, 3);
+        Stack<MarsRover.Position> aresult = MarsRover.traverseCmd("EXPLORE", 2, 5);
+
+        Stack<MarsRover.Position> eresult = new Stack<>();
+        eresult.add(new MarsRover.Position(0, 0));
+        eresult.add(new MarsRover.Position(0, 1));
+        eresult.add(new MarsRover.Position(0, 2));
+        eresult.add(new MarsRover.Position(0, 3));
+        eresult.add(new MarsRover.Position(0, 4));
+        eresult.add(new MarsRover.Position(1, 4));
+        eresult.add(new MarsRover.Position(2, 4));
+        eresult.add(new MarsRover.Position(2, 5));
+
+        Assert.assertTrue(testPathEquality(aresult, eresult));
+    }
+
+    @Test
+    public void testExplorePath14() {
+        MarsRover.traverseCmd("PLACE", 0, 0);
+        MarsRover.traverseCmd("BLOCK", 1, 4);
+        MarsRover.traverseCmd("BLOCK", 2, 3);
+        MarsRover.traverseCmd("BLOCK", 3, 4);
+        Stack<MarsRover.Position> aresult = MarsRover.traverseCmd("EXPLORE", 2, 4);
+
+        Stack<MarsRover.Position> eresult = new Stack<>();
+        eresult.add(new MarsRover.Position(0, 0));
+        eresult.add(new MarsRover.Position(0, 1));
+        eresult.add(new MarsRover.Position(0, 2));
+        eresult.add(new MarsRover.Position(0, 3));
+        eresult.add(new MarsRover.Position(0, 4));
+        eresult.add(new MarsRover.Position(0, 5));
+
+        eresult.add(new MarsRover.Position(1, 5));
+        eresult.add(new MarsRover.Position(2, 5));
+        eresult.add(new MarsRover.Position(2, 4));
+
+        Assert.assertTrue(testPathEquality(aresult, eresult));
+    }
 }
